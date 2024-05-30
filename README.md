@@ -67,5 +67,9 @@ plot_student_progress_by_grade_level_with_embedded_keys(data, categories, test_g
 process_student_file(input_file, output_folder)
 create_all_student_charts(input_directory, output_directory)
 
-LICENSE:
-This project is licensed proprietarily. See the LICENSE file for details
+## License
+
+This project is licensed under a Proprietary License. Unauthorized use, distribution, and modification of this software are strictly prohibited.
+
+For permissions, please contact dalton.wilson.data@gmail.com.
+
