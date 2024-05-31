@@ -43,7 +43,7 @@ Follow the on-screen instructions to input login details and other required info
 
 MODULES:
 
-1. cbm_login_functions - Handles login operations:
+A. cbm_login_functions - Handles login operations:
 
 store_login_credentials()
 
@@ -55,7 +55,7 @@ login()
 
 
 
-2. progressor_functions -Assists with navigation and data processing tasks:
+B. progressor_functions -Assists with navigation and data processing tasks:
 
 nav_to_tables(driver)
 
@@ -64,7 +64,7 @@ change_timer_value()
 check_and_fill_data(input_folder_path)
 
 
-3. cbm_site_data_collection_functions - Collects data from the Easy CBM website. No API was available, so this section is basically a web scraper. In order to ensure proper performance, the browser window that opens during program execution should not be disturbed.
+C. cbm_site_data_collection_functions - Collects data from the Easy CBM website. No API was available, so this section is basically a web scraper. In order to ensure proper performance, the browser window that opens during program execution should not be disturbed.
 
 save_test_date_data(driver, download_dir, timer)
 
@@ -75,7 +75,7 @@ write_student_tables(driver, test_file_names, username, download_dir, timer)
 get_grade_levels(username, password)
 
 
-4. data_cleaning_functions - Cleans and processes the collected data:
+D. data_cleaning_functions - Cleans and processes the collected data:
 
 shuffle_names(student_name)
 
@@ -94,7 +94,7 @@ save_files_by_student(big_df)
 save_files_by_class(big_df)
 
 
-5. data_processing_functions - Processes the cleaned data to generate recommendations:
+E. data_processing_functions - Processes the cleaned data to generate recommendations:
 
 process_file(file_path)
 
@@ -103,7 +103,7 @@ processed_student_file_destination(processed_file_path, grade_level, subject, st
 create_student_question_type_recommendations(input_folder_path)
 
 
-6. data_visualization_functions - Generates visualizations based on the processed data:
+F. data_visualization_functions - Generates visualizations based on the processed data:
 
 plot_progress_by_test_group_with_embedded_keys(data, categories, test_groups, output_folder, subject, current_grade_level)
 
