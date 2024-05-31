@@ -15,6 +15,7 @@ Generation of visual reports and recommendations for classes and students.
 Visualization of data trends and student progress.
 
 INSTALLATION:
+
 Clone the repository-
 Copy code:
 git clone https://github.com/yourusername/your-repo-name.git
