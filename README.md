@@ -25,11 +25,12 @@ Copy code:
 pip install -r requirements.txt
 
 USAGE:
+
 Navigate to the project directory.
 Run the main program-
 Copy code:
-
 python main_runner.py
+
 Follow the on-screen instructions to input login details and other required information.
 
 MODULES:
