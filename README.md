@@ -8,12 +8,14 @@ PURPOSE:
 The EasyCBM program, authored by the University of Oregon, provides standardized math and reading exams, automated grading, and feedback at the class and individual student levels, as well as a question-by_question breakdown of the test including question type and a list of students who missed the question. One useful aspect that is missing from the EasyCBM website, however, is a breakdown of data by question type, which is very helpful for teachers when deciding which areas of curriculum to focus on moving forward throughout the year. This program is designed to take the data from the website, organize it by question category, and provide line charts of test-over-test performance by category at both the class and student levels, as well as recommendations on which aspects of curriculum teachers should focus on in order to most positively impact performance on subsequent exams and understanding of grade-level math as a whole.
 
 
+
 FEATURES:
 
 Automated login and data collection from the Easy CBM platform.
 Data cleaning and consolidation.
 Generation of visual reports and recommendations for classes and students.
 Visualization of data trends and student progress.
+
 
 
 INSTALLATION:
@@ -27,6 +29,7 @@ Copy code:
 pip install -r requirements.txt
 
 
+
 USAGE:
 
 Navigate to the project directory.
@@ -37,13 +40,20 @@ python main_runner.py
 Follow the on-screen instructions to input login details and other required information.
 
 
+
 MODULES:
 
 cbm_login_functions - Handles login operations:
+
 store_login_credentials()
+
 create_destination_folder(username)
+
 configure_driver(download_dir)
+
 login()
+
+
 
 progressor_functions -Assists with navigation and data processing tasks:
 nav_to_tables(driver)
