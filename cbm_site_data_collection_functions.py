@@ -12,12 +12,11 @@ import glob
 import pandas as pd
 
 
+# Download the files with test date information since dates are not part of the item-by-item data used in analysis
 def save_test_date_data(driver, download_dir, timer):
-    # time.sleep(timer)
+    # Click the website button that automatically downloads a csv file with test date data
     test_dates_button = driver.find_element(By.CSS_SELECTOR, '[id^="gid_link"]')
-    print(test_dates_button.text)
     test_dates_button.click()
-    # time.sleep(timer + 2)
 
     # Wait for the file to appear in the download directory
     wait_time = 0
@@ -31,6 +30,7 @@ def save_test_date_data(driver, download_dir, timer):
         time.sleep(timer)
         wait_time += 1
 
+    # Check for successful download
     if downloaded_file:
         print(f"File downloaded successfully: {downloaded_file}")
     else:
@@ -40,8 +40,10 @@ def save_test_date_data(driver, download_dir, timer):
     return driver
 
 
+# Create the test question data frames that will be combined for analysis
 def write_test_tables(driver, username, sleep_timer):
 
+    # Create the directory where raw data will be stored
     print('Creating destination directory for testing information files')
     frame_folder = (os.path.join(Path.cwd().parent, "Extracted Data Frames", f"{username}"))
     if not os.path.exists(frame_folder):
@@ -52,15 +54,10 @@ def write_test_tables(driver, username, sleep_timer):
 
     # creating list of successfully saved test frames to send to student frame writer
     test_frame_names = []
-    # test_frames_missing_info = []
 
+    # Wait for element to be present that tells the driver to proceed
     wait = WebDriverWait(driver, 10)
     wait.until(ec.element_to_be_clickable((By.CLASS_NAME, "fleft")))
-    time.sleep(sleep_timer)
-
-    # parse the html
-    source = driver.page_source.encode('utf-8').strip()
-    soup = BeautifulSoup(source, 'html5lib')
 
     # Select the desired test:
     test_buttons = driver.find_elements(By.CLASS_NAME, "fleft")
@@ -68,8 +65,7 @@ def write_test_tables(driver, username, sleep_timer):
         if "Basic" in button.text or "Proficient" in button.text:
             button.click()
 
-            # wait = WebDriverWait(driver, 10)
-            # wait.until(ec.presence_of_element_located((By.ID, "reportingItemAnalysisTable")))
+            # Give the browser time to load the data
             time.sleep(sleep_timer)
 
             # Parse the html
@@ -104,25 +100,21 @@ def write_test_tables(driver, username, sleep_timer):
                 if 'Type Description' in test_items_headers:
                     test_items_df.rename(columns={'Type Description': 'Type'}, inplace=True)
                 test_items_df = test_items_df[['Item', 'Type', 'Student Names, Incorrect']]
-                # if (test_items_df['Type'] == '').any():
-                    # test_frames_missing_info.append(button.text)
 
+                # Save the frame as a csv file
                 test_items_df.to_csv(os.path.join(frame_folder, f'{username}_{button.text}_test_data.csv'), index=False)
 
+                # Add the test name to the list of processed tests
                 test_frame_names.append(button.text)
 
-    return test_frame_names, frame_folder       # test_frames_missing_info,
+    return test_frame_names, frame_folder
 
 
+# Create class roster data frames that will be combined with test data
 def write_student_tables(driver, test_list, username, folder, sleep_timer):
 
-    wait = WebDriverWait(driver, 10)
-    wait.until(ec.element_to_be_clickable((By.CLASS_NAME, "fleft")))
+    # Give browser time to load the data
     time.sleep(sleep_timer)
-
-    # parse the html
-    source = driver.page_source.encode('utf-8').strip()
-    soup = BeautifulSoup(source, 'html5lib')
 
     # Select the desired test:
     test_buttons = driver.find_elements(By.CLASS_NAME, "fleft")
@@ -130,8 +122,7 @@ def write_student_tables(driver, test_list, username, folder, sleep_timer):
         if button.text in test_list:
             button.click()
 
-            wait = WebDriverWait(driver, 10)
-            wait.until(ec.presence_of_element_located((By.ID, "studentReportingTable")))
+            # Give the browser time to load the data
             time.sleep(sleep_timer)
 
             # Parse the html
@@ -165,11 +156,13 @@ def write_student_tables(driver, test_list, username, folder, sleep_timer):
             students_df = students_df[['Student Name', 'Score']]
             students_df['Score'] = students_df['Score'].str.extract(r'\((\d+)%\)').astype(float)
 
+            # Save the frame as a csv file
             students_df.to_csv(os.path.join(folder, f'{username}_{button.text}_student_data.csv'), index=False)
 
     return driver
 
 
+# Collect grade level data for separating students into groups
 def get_grade_levels(cbm_username, cbm_password):
 
     driver = webdriver.Chrome()
@@ -236,5 +229,3 @@ def get_grade_levels(cbm_username, cbm_password):
         json.dump(grade_levels_dict, f, indent=4)
 
     return grade_levels_dict
-
-
