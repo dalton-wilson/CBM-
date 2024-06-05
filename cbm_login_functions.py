@@ -8,6 +8,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
 
+# Store site login credentials as variables to use throughout the program
 def store_login_credentials():
     print("Please enter your Easy CBM login credentials. If you possess multiple administrator \n"
           "accounts, kindly provide each set of credentials in chronological order, as prompted.")
@@ -17,6 +18,7 @@ def store_login_credentials():
     return cbm_username, cbm_password
 
 
+# Create a folder to store processed and downloaded frames before combining into comprehensive csv file
 def create_destination_folder(username):
     print('Creating destination directory for testing information files')
     frame_folder = (os.path.join(Path.cwd().parent, "Combined Frames by User", f"{username}"))
@@ -29,6 +31,7 @@ def create_destination_folder(username):
     return frame_folder
 
 
+# Configure the web driver
 def configure_driver(download_dir):
     options = Options()
     options.add_experimental_option("prefs", {
@@ -41,7 +44,9 @@ def configure_driver(download_dir):
     return driver
 
 
+# Log in to the website
 def login():
+    # In case of login error, loop through the login process until there is a successful login
     while True:
         cbm_username, cbm_password = store_login_credentials()
         frame_folder = create_destination_folder(cbm_username)
@@ -70,6 +75,7 @@ def login():
             wait = WebDriverWait(driver, 10)
             logout_button = wait.until(ec.element_to_be_clickable((By.CSS_SELECTOR,
                                                                    "a[href='/teachers/logout.php']")))
+            # If login is successful, return objects and break the loop
             if logout_button:
                 print("login successful")
                 return driver, cbm_username, cbm_password, frame_folder
