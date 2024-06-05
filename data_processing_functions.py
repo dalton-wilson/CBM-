@@ -4,6 +4,7 @@ import os
 
 
 # CLASS FILE PROCESSING FUNCTIONS
+# Helper function for processing all class files in the directory
 def process_file(file_path):
 
     filename = os.path.basename(file_path)
@@ -134,6 +135,7 @@ def process_file(file_path):
     return all_tests_ranking_df, max_test_group, subject, current_grade_level
 
 
+# Helper function for saving all processed class files in directory
 def processed_file_destination(processed_file_path, grade_level, subject, current_grade_level):
     processed_frame = pd.read_csv(processed_file_path)
     file_folder = os.path.join(Path.cwd().parent, "Processed Frames by Class", f"{current_grade_level}",
@@ -143,6 +145,7 @@ def processed_file_destination(processed_file_path, grade_level, subject, curren
     processed_frame.to_csv(os.path.join(file_folder, f"Grade {grade_level} {subject} Scores and Recommendations.csv"))
 
 
+# Create recommendations for teachers on which areas to focus on moving forward for a given class
 def create_class_question_type_recommendations(input_folder_path):
     results = []
     for file_name in os.listdir(input_folder_path):
@@ -155,6 +158,7 @@ def create_class_question_type_recommendations(input_folder_path):
 
 
 # STUDENT FILE PROCESSING FUNCTIONS
+# Helper function for processing all student files in the directory
 def process_student_file(file_path):
 
     filename = os.path.basename(file_path)
@@ -283,6 +287,7 @@ def process_student_file(file_path):
     return all_years_ranking_df, max_test_group, subject, student_name, current_grade_level
 
 
+# Helper function for saving all processed student files in directory
 def processed_student_file_destination(processed_file_path, grade_level, subject, student_name, current_grade_level):
     processed_frame = pd.read_csv(processed_file_path)
     file_folder = os.path.join(Path.cwd().parent, "Processed Frames by Class", f"{current_grade_level}",
@@ -294,6 +299,7 @@ def processed_student_file_destination(processed_file_path, grade_level, subject
     return file_folder
 
 
+# Create recommendations for teachers on which areas to focus on moving forward for a given student
 def create_student_question_type_recommendations(input_folder_path):
     results = []
     for file_name in os.listdir(input_folder_path):
