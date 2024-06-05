@@ -11,6 +11,7 @@ def shuffle_names(student_name):
     return f'{first_name} {last_name}'
 
 
+# Helper function for get_category_scores
 def cat_score_column_creator(test_frame, admin_username, student_frame, test_, cat_header):
     # Creating rows for processed data frame
     student_rows = []
@@ -43,8 +44,10 @@ def cat_score_column_creator(test_frame, admin_username, student_frame, test_, c
     return columns, student_rows
 
 
+# Create files for student accuracy by question type
 def get_category_scores(username, test_list):
 
+    # Create directory for processed files
     print('Creating destination directory for category information files')
     test_frame_folder = (os.path.join(Path.cwd().parent, "Single Test Data Frames", f"{username}"))
     if not os.path.exists(test_frame_folder):
@@ -83,6 +86,7 @@ def get_category_scores(username, test_list):
     return test_frame_folder
 
 
+# Combine all category score files for a single user into a single file
 def combine_csv_files(username, input_folder_path, output_folder_path):
     # List to hold dataframes
     dfs = []
@@ -104,6 +108,7 @@ def combine_csv_files(username, input_folder_path, output_folder_path):
     return combined_df
 
 
+# Add test date data to combined frames to help with visualizations
 def add_date_data(input_folder, username):
     # Load the datasets
     file_path_1 = os.path.join(input_folder, f"{username}_combined_df.csv")
@@ -178,6 +183,7 @@ def add_date_data(input_folder, username):
     return output_folder
 
 
+# Combine all final processed files by user into a single frame from which to create student and class files
 def combine_big_frames(input_folder_path, grade_levels):
     # List to hold dataframes
     dfs = []
@@ -225,6 +231,7 @@ def combine_big_frames(input_folder_path, grade_levels):
     return combined_df
 
 
+# Group and save all student data into individual files
 def save_files_by_student(big_df):
     print('Creating destination directory for student information files')
     output_folder = (os.path.join(Path.cwd().parent, "Student Data Frames"))
@@ -234,8 +241,6 @@ def save_files_by_student(big_df):
     else:
         print("Directory already exists")
 
-    # filepath = os.path.join(Path.cwd().parent, 'BIG_DF.csv')
-    # df = pd.read_csv(filepath)
     df = big_df
 
     # Group by 'Student Name' and test type and write to CSV
@@ -256,9 +261,6 @@ def save_files_by_student(big_df):
             cols = [col for col in group.columns if col != 'Overall Score'] + ['Overall Score']
             group = group[cols]
 
-        # Drop the 'Test Category' column
-        # group = group.drop(columns=['Administrator', 'Test Category', 'Grade Level'])
-
         # Create a valid filename for each student
         filename = f"{name.replace(' ', '_')}_{category}.csv"
         filepath = os.path.join(output_folder, filename)
@@ -270,6 +272,7 @@ def save_files_by_student(big_df):
     return output_folder
 
 
+# Group and save all student data by class
 def save_files_by_class(big_df):
     print('Creating destination directory for class information files')
     output_folder = (os.path.join(Path.cwd().parent, "Class Data Frames"))
@@ -279,16 +282,12 @@ def save_files_by_class(big_df):
     else:
         print("Directory already exists")
 
-    # filepath = os.path.join(Path.cwd().parent, 'BIG_DF.csv')
-    # df = pd.read_csv(filepath)
     df = big_df
 
     # Group by 'Student Name' and test type and write to CSV
     # Add a new column to categorize test type based on the presence of "Math" or "Reading"
     df['Test Category'] = df['Test'].apply(
         lambda x: 'math' if 'math' in x else 'reading' if 'reading' in x else 'other')
-
-    # df['Test Group'] = df['Test'].str.extract(r'(\d+|k|former_student)', expand=False).replace('k', 'K')
 
     for (grade_level, category), group in df.groupby(['Grade Level', 'Test Category']):
         # Reset the index and drop the previous index entirely to avoid it being added as a column
@@ -302,11 +301,6 @@ def save_files_by_class(big_df):
             # Move "Overall Score" to the end
             cols = [col for col in group.columns if col != 'Overall Score'] + ['Overall Score']
             group = group[cols]
-
-        # Drop the 'Test Category' column
-        # group = group.drop(columns=['Administrator', 'Test Category', 'Grade Level'])
-        # test_groups = pd.Series(df['Test Group'].unique()).dropna().unique()
-        # grade_level = test_groups.max()
 
         # Create a valid filename for each student
         filename = f"{grade_level.replace(' ', '_')}_{category}.csv"
