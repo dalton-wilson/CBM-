@@ -7,6 +7,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.common.exceptions import WebDriverException, NoSuchElementException
 
 
+# Direct the web driver to the appropriate location to begin data collection
 def nav_to_tables(driver):
 
     print("Navigating to testing information page...")
@@ -43,6 +44,8 @@ def nav_to_tables(driver):
     return driver
 
 
+# This function runs if there is a calculation error in data processing due to the absence of data. It will reset the
+# "timer" variable to allow the internet connection more time to load data
 def change_timer_value():
     print("\nERROR: No data was saved to your directories. You may need to give your computer more time to process the"
           " online data.")
@@ -57,6 +60,7 @@ def change_timer_value():
     return sleep_timer
 
 
+# This function combines all single-test files into one frame and adds student grade-level data
 def combine_csv_files(input_folder_path, grade_levels):
     # List to hold dataframes
     dfs = []
@@ -73,21 +77,26 @@ def combine_csv_files(input_folder_path, grade_levels):
     # Concatenate all dataframes into one
     combined_df = pd.concat(dfs, ignore_index=True)
 
-    # Create a reverse lookup dictionary from grade_levels
+    # Create a reverse lookup dictionary from the "grade_levels" dictionary
     student_to_grade = {}
     for grade, students in grade_levels.items():
         for student in students:
             student_to_grade[student] = grade
 
+    # Add the "Grade Level" column to the data frame
     combined_df['Grade Level'] = combined_df['Student Name'].map(student_to_grade)
 
+    # Save the frame as a csv file
     combined_df.to_csv(os.path.join(Path.cwd().parent, "BIG_DF.csv"), index=False)
 
 
+# Check for missing question category values and give the user options on how to account for the missing data
 def check_and_fill_data(input_folder_path):
+    # Continue prompting the user to address missing data until it is resolved
     while True:
         incomplete_tests = []
 
+        # Loop through all the files in the folder
         for filename in os.listdir(input_folder_path):
             file_path = os.path.join(input_folder_path, filename)
             print(f"Checking file: {file_path}")
@@ -97,6 +106,7 @@ def check_and_fill_data(input_folder_path):
                 # Check if 'Type' column exists and if it has missing data
                 if 'Type' in df.columns and ((df['Type'].isnull() | (df['Type'] == '')).any()):
                     print(f"Missing data found in {filename}")
+                    # If data is missing, add the file name to the incomplete tests list
                     incomplete_tests.append(filename)
                 elif 'Type' not in df.columns:
                     print(f"'Type' column missing in {filename}")
@@ -111,8 +121,10 @@ def check_and_fill_data(input_folder_path):
                              "with the listed files, located in the 'Extracted Data Frames' folder, and manually \n"
                              "input missing item TYPE values. Enter 'complete' when all test files are updated, \n"
                              "'check' to verify again, or 'bypass' to remove rows with missing data: ")
+            # If user elects to fill in missing data, the program will re-check for completeness
             if response.lower() == "complete":
-                continue  # This will restart the check to confirm user update.
+                continue  # This will restart the check to confirm user update
+            # If the user elects to ignore the missing data, the program will eliminate those rows and continue running
             elif response.lower() == "bypass":
                 for test_file in incomplete_tests:
                     file_path = os.path.join(input_folder_path, test_file)
@@ -125,6 +137,3 @@ def check_and_fill_data(input_folder_path):
         else:
             print("All test files updated.")
             break  # Exit the loop if all files are complete
-
-# Example usage
-# check_and_fill_data('path_to_your_data_folder')
