@@ -122,7 +122,7 @@ def process_file(input_file, output_folder):
                                                    current_grade_level)
 
 
-# Function to process all files in a directory
+# Create charts for all class files in a directory
 def create_all_class_charts(input_directory):
     output_directory = os.path.join(Path.cwd().parent, "Processed Frames by Class")
     if not os.path.exists(output_directory):
@@ -200,7 +200,7 @@ def plot_student_progress_by_grade_level_with_embedded_keys(data, categories, te
         plt.close()
 
 
-# Function to extract student name from filename
+# Extract student name from filename
 def extract_student_name_and_subject(filename):
     name_parts = filename.split('_')
     student_name = '_'.join(name_parts[:-1])
@@ -209,7 +209,7 @@ def extract_student_name_and_subject(filename):
     return student_name, subject
 
 
-# Function to process a single file
+# Process a single file
 def process_student_file(input_file, output_folder):
     filename = os.path.basename(input_file)
     print(f"PROCESSING FILE {filename}")  # debug print statement
@@ -244,7 +244,7 @@ def process_student_file(input_file, output_folder):
                                                             student_name, subject, current_grade_level)
 
 
-# Function to process all files in a directory
+# Create charts for all student files in a directory
 def create_all_student_charts(input_directory, output_directory):
     for filename in os.listdir(input_directory):
         if filename.endswith('.csv'):
